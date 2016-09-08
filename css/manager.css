@@ -1,0 +1,11 @@
+@media (min-width:768px) {
+    #slider-one{
+        width: 250px;
+        margin-top:51px;
+        position: absolute;
+        z-index: 1;
+    }
+}
+#player-delete{
+    margin-left: 80px;
+}
