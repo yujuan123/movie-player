@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MANAGER</title>
+
+    <link rel="stylesheet" href="./bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/manager.css">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入  online-->
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="./bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <!--找准id 增加和删除-->
+    <!--<script>
+        var playerArray = [{1:'第一演出厅'}];
+        //在id为test的table的最后增加一行
+        function addtr(id){
+            tr_id = $("#"+id+">tbody>tr:last").attr("id");
+            tr_id++;
+            //添加第二行
+            str = "<tr id = '"+tr_id+"'><td width='30%'><input type='text' value=''/></td><td width='30%'><a href='#'>座位管理</a></td><td width='30%'><button onclick='speak()' >修改</button></td></tr>";
+
+            $('#'+id).append(str);
+        }
+        function speak(){
+            alert("hahaha");
+        }
+        //删除id为test的table的最后一行
+        function deltr(id){
+            tr_id = $("#"+id+">tbody>tr:last").attr("id");
+            $('#'+tr_id).remove();
+        }
+        //修改play-number
+        function modify(player){
+            $("."+player).val('');
+            $("."+player).focus();
+        }
+
+    </script>
+</head>
+<body>
+
+
+    <div>
+        <table id="test" name="test" class="test table table-hover"  >
+            <tbody>
+            <tr id="1">
+                <td><input type="text" class="player-number" value="第一演出厅"/></td>
+                <td>
+                    <a href="#" id="seat-manage" >
+                        座位管理
+                    </a>
+                </td>
+                <td><input type="button" id="player-modify" value="修改" onclick="modify('player-number')"/></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <input id="player-add" type="button" name="button" value="添加" onclick="addtr('test');">
+    <input id="player-delete" type="button" name="button" value="删除" onclick="deltr('test');">
+
+
+</body>-->
+
+
+    <script type="text/javascript">
+        //用于添加一个新行
+        function do_Add(tag) {
+
+            //首先将DOM对象转换成JQuery对象
+            //然后获得当前DOM对象的父元素tr
+            //调用Jquery的clone方法，克隆一个行的副本
+            var tr = $(tag).parents("tr").clone();
+            //为了用于操作的列被修改时出现重复
+            var td = tr.find("td").eq(4).html("");
+            //判断此行有几列
+            var count = tr.find("td").length;
+            //使用each方法绑定当前列的click事件，使该列可以被编辑
+            tr.find("td").each(function (i) {
+                //避免最后一个列被修改
+                if (i < count - 1) {
+                    $(this).click(function () {
+                        editTd(this);
+                    });
+                }
+            });
+            //添加取消事件（创建一个超链接，用于取消添加行）
+            var cacel = $("<a>").attr("href", "#").text("取消").click(function () {
+                do_cancel(this);
+            }).appendTo(td);
+            //追加保存事件（创建一个超链接，用于保存添加行）
+            var save = $("<a>").attr("href", "#").text("保存").click(function () {
+                do_save(this);
+            }).appendTo(td);
+
+            //把克隆的行添加到表格中
+            tr.appendTo($("#tbody"));
+            return false;
+        }
+        //用于创建一个输入框,并把这个输入框添加到当前列中，在这个输入框失去焦点的时候把输入值添加到当前的列中
+        function editTd(tag) {
+
+            //把DOM对象转换成Jquery对象
+            var td = $(tag);
+            //获取当前对象的文本内容
+            var text = td.html();
+            //创建一个文本框，把原来的列中的文本值赋值给该文本框
+
+            var input = $("<input id='a'>").val(text).blur(function () {
+                //在该文本框失去焦点的时候，把文本框的值添加到列中
+                td.html($(this).val()).click(function () {
+                    editTd(this);
+                });
+            });
+
+            td.html(input).unbind("click");
+            $("#a")[0].focus();
+        }
+        //取消事件
+        function do_cancel(tag) {
+            $(tag).parents("tr").remove();
+        }
+        //列的保存事件
+        function do_save(tag) {
+            this.focus();
+            //获取当前点击的父元素，整个行
+            var tr = $(tag).parents("tr");
+            //获取当前行有几列
+            var count = tr.find("td").length;
+            //获取当前行的所以文本
+            tr.find("td").each(function (i) {
+                if (i < count - 1) {
+                    alert(count + "\n" + $(this).text())
+                }
+            });
+        }
+    </script>
+
+</head>
+
+<body>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container ">
+        <div id="navbar" class="navbar-collapse collapse">
+            <div class="row">
+                <div class="col-lg-3">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">演出厅管理</a></li>
+                        <li><a href="#about">用户管理</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-3 col-md-offset-6">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">登入用户ID</a></li>
+                        <li><a href="#">注销</a></li>
+                        <li><a href="#">注册</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<br><br><br><br>
+<div class="col-md-4 col-md-offset-8">
+    <input type="text"/>
+    <button type="button"><span class="glyphicon glyphicon-search"></span></button>
+</div>
+<table id="Info" class="table table-hover">
+    <tbody id="tbody">
+
+    <tr id="1">
+        <td><input type="text" class="player-number" value="第一演出厅"/></td>
+        <td>
+            <a href="#" id="seat-manage">
+                座位管理
+            </a>
+        </td>
+        <td>
+            <a href="#" onclick="do_Add(this)">添加当前行</a>
+        </td>
+        <td><input type="button" value="保存"/></td>
+        <td><input type="button" value="删除"/></td>
+    </tr>
+
+
+    </tbody>
+</table>
+</body>
+</html>
