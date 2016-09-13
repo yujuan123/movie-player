@@ -7,10 +7,12 @@
     <link rel="stylesheet" href="./bootstrap-3.3.5-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/manager.css">
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入  online-->
-    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <script src="./bootstrap-3.3.5-dist/js/jquery-3.1.0.min.js"></script>
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="./bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
     <script type="text/javascript">
+
+        var playerInput = [];
         //用于添加一个新行
         function do_Add(tag) {
 
@@ -31,17 +33,17 @@
                     });
                 }
             });
-            //添加取消事件（创建一个超链接，用于取消添加行）
-            var cacel = $("<a>").attr("href", "#").text("保存").click(function () {
-                do_cancel(this);
-            }).appendTo(td);
             //追加保存事件（创建一个超链接，用于保存添加行）
-            var save = $("<a>").attr("href", "#").text("删除").click(function () {
+            var save = $("<a>").attr("href", "#").text("保存").click(function () {
                 do_save(this);
+            }).appendTo(td);
+            //添加取消事件（创建一个超链接，用于取消添加行）
+            var cacel = $("<a>").attr("href", "#").text("删除").click(function () {
+                do_cancel(this);
             }).appendTo(td);
 
             //把克隆的行添加到表格中
-            tr.appendTo($("#tbody"));
+            tr.appendTo($("#player-tbody"));
             return false;
         }
         //用于创建一个输入框,并把这个输入框添加到当前列中，在这个输入框失去焦点的时候把输入值添加到当前的列中
@@ -66,17 +68,33 @@
             $(tag).parents("tr").remove();
         }
         //列的保存事件  (  为获取到一行数据做准备  )
-        function do_save(tag) {
+        function do_save(tag)
+        {
             this.focus();
             //获取当前点击的父元素，整个行
-            var tr = $(tag).parents("tr");
+            var tr =$(tag).parents("tr");
             //获取当前行有几列
             var count = tr.find("td").length;
-            //获取当前行的所以文本
-            tr.find("td").each(function (i) {
-                 if (i < count - 1) {
-                    alert(count + "\n" + $(this).text());
-                 }
+            //获取当前行的所有文本
+            tr.find("td").each(function(i){
+                if(i<count-1){
+                    /*alert(count+"\n"+$(this).text());*/
+                    playerInput.push($(this).text());
+                }
+            });
+        }
+        //演出厅搜索
+        //? 把值返回后，怎么显示到页面---->利用
+        function do_Search(){
+            var searchInput = $("#search-input").val();
+            //先从第二行
+            $('#player-tbody').find('tr').each(function () {
+                //获取当前tr内下标为index的列的文本值，现在知道这个index很重要了吧？哈哈...
+                var targetText =  $($(this).find('td').get(0)).text();
+                //如果输入参数的文本值模糊匹配不到此文本值则隐藏此tr
+                if(targetText.indexOf(searchInput) === -1){
+                    $(this).hide();
+                }
             });
         }
     </script>
@@ -108,24 +126,25 @@
 </nav>
 <br><br><br><br>
 <div class="col-md-4 col-md-offset-8">
-    <input type="text"/>
-    <button type="button"><span class="glyphicon glyphicon-search"></span></button>
+    <input type="text" id="search-input"/>
+    <button type="button" onclick="do_Search()"><span class="glyphicon glyphicon-search "></span></button>
 </div>
-<table id="Info" class="table table-hover">
-    <tbody id="tbody">
-
-    <tr>
-        <td>第一演出厅</td>
-        <td>
-            <a href="#" id="seat-manage">
-                座位管理
-            </a>
-        </td>
-        <td>
-            <a href="#" onclick="do_Add(this)">添加当前行</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div class="player-table">
+    <table id="Info" class="table table-hover ">
+        <tbody id="player-tbody">
+        <tr>
+            <td>1号演出厅</td>
+            <td>
+                <a href="#" id="seat-manage">
+                    座位管理
+                </a>
+            </td>
+            <td>
+                <a href="#" onclick="do_Add(this)">添加当前行</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
