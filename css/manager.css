@@ -1,3 +1,6 @@
+body{
+    font-size: large;
+}
 @media (min-width:768px) {
     #slider-one{
         width: 250px;
@@ -8,4 +11,10 @@
 }
 #player-delete{
     margin-left: 80px;
+}
+.player-table{
+    width:90%;
+    margin:auto;
+    margin-top:80px;
+    text-align: center;
 }
