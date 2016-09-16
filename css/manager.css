@@ -1,5 +1,4 @@
 body{
-    font-size: large;
 }
 @media (min-width:768px) {
     #slider-one{
@@ -12,9 +11,20 @@ body{
 #player-delete{
     margin-left: 80px;
 }
+#a{
+    width:95px;
+}
 .player-table{
     width:90%;
     margin:auto;
     margin-top:80px;
     text-align: center;
+}
+.player-table thead{
+    font-size:x-large;
+    font-weight:800;
+    color:royalblue;
+}
+.player-table tbody{
+    font-size:large;
 }
