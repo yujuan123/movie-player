@@ -27,18 +27,18 @@
             //使用each方法绑定当前列的click事件，使该列可以被编辑
             tr.find("td").each(function (i) {
                 //避免最后一个列被修改
-                if (i < count - 1) {
+                if (i ===0) {
                     $(this).click(function () {
                         editTd(this);
                     });
                 }
             });
             //追加保存事件（创建一个超链接，用于保存添加行）
-            var save = $("<a>").attr("href", "#").text("保存").click(function () {
+            var save = $("<input type='button' class='btn btn-info'/>").val("保存").click(function () {
                 do_save(this);
             }).appendTo(td);
             //添加取消事件（创建一个超链接，用于取消添加行）
-            var cacel = $("<a>").attr("href", "#").text("删除").click(function () {
+            var cacel = $("<input type='button' class='btn btn-warning'/>").val("删除").click(function () {
                 do_cancel(this);
             }).appendTo(td);
 
@@ -53,15 +53,17 @@
             var td = $(tag);
 
             //创建一个文本框，把原来的列中的文本值赋值给该文本框
-            var input = $("<input id='a'>").val('').blur(function () {
+            var input = $("<input id='a'>").val(td.html()).blur(function () {
                 //在该文本框失去焦点的时候，把文本框的值添加到列中
                 td.html($(this).val()).click(function () {
                     editTd(this);
                 });
             });
-
+            /*var temp = td.html(input);
+            console.log(temp);
+            temp.unbind("click");*/
             td.html(input).unbind("click");
-            $("#a")[0].focus();
+            $("#a").focus();
         }
         //取消事件
         function do_cancel(tag) {
@@ -78,7 +80,6 @@
             //获取当前行的所有文本
             tr.find("td").each(function(i){
                 if(i<count-1){
-                    /*alert(count+"\n"+$(this).text());*/
                     playerInput.push($(this).text());
                 }
             });
@@ -87,15 +88,22 @@
         //? 把值返回后，怎么显示到页面---->利用
         function do_Search(){
             var searchInput = $("#search-input").val();
-            //先从第二行
-            $('#player-tbody').find('tr').each(function () {
-                //获取当前tr内下标为index的列的文本值，现在知道这个index很重要了吧？哈哈...
-                var targetText =  $($(this).find('td').get(0)).text();
-                //如果输入参数的文本值模糊匹配不到此文本值则隐藏此tr
-                if(targetText.indexOf(searchInput) === -1){
-                    $(this).hide();
-                }
-            });
+            if((/^\d{1,3}$/).test(searchInput)){
+                $("#wrong-info").hide();
+                //先从第二行
+                $('#player-tbody').find('tr').each(function () {
+                    $(this).show();
+                    //获取当前tr内下标为index的列的文本值，现在知道这个index很重要了吧？哈哈...
+                    var targetText =  $($(this).find('td').get(0)).text();
+                    //如果输入参数的文本值模糊匹值家配不到此文本值则隐藏此tr
+                    if(targetText.indexOf(searchInput) === -1){
+                        $(this).hide();
+                    }
+                });
+            }else{
+                $("#wrong-info").show();
+            }
+
         }
     </script>
 
@@ -126,11 +134,19 @@
 </nav>
 <br><br><br><br>
 <div class="col-md-4 col-md-offset-8">
-    <input type="text" id="search-input"/>
-    <button type="button" onclick="do_Search()"><span class="glyphicon glyphicon-search "></span></button>
+        <input type="text" id="search-input" onkeypress="if(event.keyCode===13) {btn.click();return false;}"/>
+        <button type="button" id="btn"  onclick="do_Search();return false;"><span class="glyphicon glyphicon-search "></span></button>
+        <p id="wrong-info"  class="text-danger" hidden>请输入0～9的数字最多三位</p>
 </div>
 <div class="player-table">
     <table id="Info" class="table table-hover ">
+        <thead>
+            <tr>
+                <td>演出厅</td>
+                <td>座位管理</td>
+                <td>操作</td>
+            </tr>
+        </thead>
         <tbody id="player-tbody">
         <tr>
             <td>1号演出厅</td>
@@ -140,7 +156,7 @@
                 </a>
             </td>
             <td>
-                <a href="#" onclick="do_Add(this)">添加当前行</a>
+                <button  class="btn btn-info" onclick="do_Add(this)">添加当前行</button>
             </td>
         </tr>
         </tbody>
